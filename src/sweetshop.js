@@ -10,6 +10,10 @@ class SweetShop {
     getAllSweets() {
         return this.sweets;
     }
+    getSweets() {
+    return this.sweets;
+}
+
 }
 
 module.exports = SweetShop;

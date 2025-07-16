@@ -23,4 +23,12 @@ describe('SweetShop', () => {
             quantity: 20
         });
     });
+
+    test('should return all sweets', () => {
+    shop.addSweet(1001, 'Kaju Katli', 'Nut-Based', 50, 20);
+    shop.addSweet(1002, 'Gajar Halwa', 'Vegetable-Based', 30, 15);
+    const sweets = shop.getSweets();
+    expect(sweets.length).toBe(2);
+    });
+
 });
