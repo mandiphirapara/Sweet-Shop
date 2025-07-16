@@ -18,6 +18,13 @@ class SweetShop {
         this.sweets = this.sweets.filter(sweet => sweet.id !== id);
     }
 
+    updateSweet(id, updatedDetails) {
+        const sweet = this.sweets.find(sweet => sweet.id === id);
+        if (sweet) {
+            Object.assign(sweet, updatedDetails);
+        }
+    }
+
 
 }
 
