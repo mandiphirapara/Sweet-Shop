@@ -25,10 +25,11 @@ class SweetShop {
         }
     }
 
-     searchSweets({ name }) {
+     searchSweets({ name , category }) {
         return this.sweets.filter(sweet => {
             const matchName = name ? sweet.name.toLowerCase().includes(name.toLowerCase()) : true;
-            return matchName;
+            const matchCategory = category ? sweet.category.toLowerCase() === category.toLowerCase() : true;
+            return matchName && matchCategory;
         });
     }
 
