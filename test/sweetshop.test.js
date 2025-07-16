@@ -36,13 +36,21 @@ describe('SweetShop', () => {
         shop.deleteSweet(1001);
         expect(shop.getAllSweets().length).toBe(0); // Fixed here
     });
-    
+
     test('should update sweet details by id', () => {
         shop.addSweet(1001, 'Kaju Katli', 'Nut-Based', 50, 20);
         shop.updateSweet(1001, { price: 60, quantity: 25 });
         const sweets = shop.getAllSweets();
         expect(sweets[0].price).toBe(60);
         expect(sweets[0].quantity).toBe(25);
+    });
+
+     test('should search sweets by name', () => {
+        shop.addSweet(1001, 'Kaju Katli', 'Nut-Based', 50, 20);
+        shop.addSweet(1002, 'Gulab Jamun', 'Milk-Based', 30, 25);
+        const result = shop.searchSweets({ name: 'Kaju' });
+        expect(result.length).toBe(1);
+        expect(result[0].name).toBe('Kaju Katli');
     });
 
 });
