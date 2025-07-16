@@ -1,0 +1,21 @@
+{
+  "name": "sweetshop",
+  "version": "1.0.0",
+  "description": "Sweet Shop Management System with TDD using Jest",
+  "main": "src/sweetshop.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "sweetshop",
+    "tdd",
+    "jest",
+    "nodejs"
+  ],
+  "author": "Mandip Hirapara",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^30.0.4"
+  }
+}
+
