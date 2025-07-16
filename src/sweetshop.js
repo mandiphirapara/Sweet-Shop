@@ -11,8 +11,13 @@ class SweetShop {
         return this.sweets;
     }
     getSweets() {
-    return this.sweets;
-}
+        return this.sweets;
+    }
+
+    deleteSweet(id) {
+        this.sweets = this.sweets.filter(sweet => sweet.id !== id);
+    }
+
 
 }
 
