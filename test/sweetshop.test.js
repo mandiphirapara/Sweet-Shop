@@ -61,4 +61,12 @@ describe('SweetShop', () => {
         expect(result[0].category).toBe('Milk-Based');
     });
 
+      test('should search sweets by price range', () => {
+        shop.addSweet(1001, 'Kaju Katli', 'Nut-Based', 50, 20);
+        shop.addSweet(1002, 'Gulab Jamun', 'Milk-Based', 30, 25);
+        const result = shop.searchSweets({ minPrice: 40, maxPrice: 60 });
+        expect(result.length).toBe(1);
+        expect(result[0].price).toBe(50);
+    });
+
 });
