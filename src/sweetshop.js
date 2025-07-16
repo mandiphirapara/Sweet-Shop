@@ -25,6 +25,13 @@ class SweetShop {
         }
     }
 
+     searchSweets({ name }) {
+        return this.sweets.filter(sweet => {
+            const matchName = name ? sweet.name.toLowerCase().includes(name.toLowerCase()) : true;
+            return matchName;
+        });
+    }
+
 
 }
 
