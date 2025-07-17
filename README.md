@@ -114,8 +114,7 @@ You will need two separate terminals running at the same time.
 ### Terminal 1: Start the Mock API Server
 Navigate to the root Sweet-Shop directory.
 Run this command:
-```
-Bash
+```bash
 json-server --watch db.json --port 3001
 ```
 Leave this terminal running. This is your backend.
