@@ -85,5 +85,12 @@ describe('SweetShop', () => {
         expect(() => shop.purchaseSweet(9999, 1)).toThrow('Sweet not found');
     });
 
+     test('should restock sweet and increase quantity', () => {
+        shop.addSweet(1001, 'Kaju Katli', 'Nut-Based', 50, 10);
+        shop.restockSweet(1001, 5);
+        const sweet = shop.getAllSweets()[0];
+        expect(sweet.quantity).toBe(15);
+    });
+
 
 });
