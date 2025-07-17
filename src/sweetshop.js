@@ -45,6 +45,14 @@ class SweetShop {
     sweet.quantity -= quantity;
 }
 
+ restockSweet(id, quantity) {
+        const sweet = this.sweets.find(sweet => sweet.id === id);
+        if (!sweet) {
+            throw new Error('Sweet not found');
+        }
+        sweet.quantity += quantity;
+    }
+
     
 
 }
