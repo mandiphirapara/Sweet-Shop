@@ -24,15 +24,17 @@ class SweetShop {
             Object.assign(sweet, updatedDetails);
         }
     }
-
-     searchSweets({ name , category }) {
+    searchSweets({ name, category, minPrice, maxPrice }) {
         return this.sweets.filter(sweet => {
             const matchName = name ? sweet.name.toLowerCase().includes(name.toLowerCase()) : true;
             const matchCategory = category ? sweet.category.toLowerCase() === category.toLowerCase() : true;
-            return matchName && matchCategory;
+            const matchPrice = (minPrice !== undefined ? sweet.price >= minPrice : true) &&
+                               (maxPrice !== undefined ? sweet.price <= maxPrice : true);
+            return matchName && matchCategory && matchPrice;
         });
     }
 
+    
 
 }
 
