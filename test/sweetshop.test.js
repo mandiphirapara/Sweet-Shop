@@ -45,7 +45,7 @@ describe('SweetShop', () => {
         expect(sweets[0].quantity).toBe(25);
     });
 
-     test('should search sweets by name', () => {
+    test('should search sweets by name', () => {
         shop.addSweet(1001, 'Kaju Katli', 'Nut-Based', 50, 20);
         shop.addSweet(1002, 'Gulab Jamun', 'Milk-Based', 30, 25);
         const result = shop.searchSweets({ name: 'Kaju' });
@@ -53,7 +53,7 @@ describe('SweetShop', () => {
         expect(result[0].name).toBe('Kaju Katli');
     });
 
-     test('should search sweets by category', () => {
+    test('should search sweets by category', () => {
         shop.addSweet(1001, 'Kaju Katli', 'Nut-Based', 50, 20);
         shop.addSweet(1002, 'Gulab Jamun', 'Milk-Based', 30, 25);
         const result = shop.searchSweets({ category: 'Milk-Based' });
@@ -61,12 +61,29 @@ describe('SweetShop', () => {
         expect(result[0].category).toBe('Milk-Based');
     });
 
-      test('should search sweets by price range', () => {
+    test('should search sweets by price range', () => {
         shop.addSweet(1001, 'Kaju Katli', 'Nut-Based', 50, 20);
         shop.addSweet(1002, 'Gulab Jamun', 'Milk-Based', 30, 25);
         const result = shop.searchSweets({ minPrice: 40, maxPrice: 60 });
         expect(result.length).toBe(1);
         expect(result[0].price).toBe(50);
     });
+
+    test('should purchase sweet and reduce quantity', () => {
+        shop.addSweet(1001, 'Kaju Katli', 'Nut-Based', 50, 20);
+        shop.purchaseSweet(1001, 5);
+        const sweets = shop.getAllSweets();
+        expect(sweets[0].quantity).toBe(15);
+    });
+
+    test('should throw error if not enough stock', () => {
+        shop.addSweet(1002, 'Gulab Jamun', 'Milk-Based', 40, 10);
+        expect(() => shop.purchaseSweet(1002, 15)).toThrow('Not enough stock available');
+    });
+
+    test('should throw error if sweet not found', () => {
+        expect(() => shop.purchaseSweet(9999, 1)).toThrow('Sweet not found');
+    });
+
 
 });
