@@ -73,6 +73,9 @@ Sweet-Shop/
 * **JavaScript (ES6+)**
 * **Jest** (Testing Framework)
 
+### Mock API
+* **JSON Server**
+
 ### Version Control
 * **Git** & **GitHub**
 
@@ -82,7 +85,10 @@ Sweet-Shop/
 
 ### Prerequisites
 
-Make sure you have Node.js and npm installed on your machine.
+Make sure you have Node.js and npm installed on your machine. You will also need to install JSON Server globally.
+```bash
+npm install -g json-server.
+```
 
 ### Installation & Setup
 
@@ -103,6 +109,19 @@ Make sure you have Node.js and npm installed on your machine.
 
 ### Running the Application
 
+You will need two separate terminals running at the same time.
+
+### Terminal 1: Start the Mock API Server
+Navigate to the root Sweet-Shop directory.
+Run this command:
+```
+Bash
+json-server --watch db.json --port 3001
+```
+Leave this terminal running. This is your backend.
+
+### Terminal 2: Start the React Frontend
+Open a new terminal window.
 1.  From the `frontend` directory, start the development server:
     ```bash
     cd frontend

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import { Container, Button, Row, Col } from 'react-bootstrap';
 import Header from './components/Header';
 import SweetList from './components/SweetList';
@@ -9,122 +9,137 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
-import SweetShop from './logic/sweetshop';
+// We no longer import the SweetShop class
 
-const shop = new SweetShop();
-
-shop.addSweet(1001, "Kaju Katli", "Nut-Based", 50, 20);
-shop.addSweet(1002, "Gajar Halwa", "Vegetable-Based", 30, 15);
-shop.addSweet(1003, "Gulab Jamun", "Milk-Based", 10, 50);
+const API_URL = 'http://localhost:3001/sweets';
 
 function App() {
-    const [sweets, setSweets] = useState(shop.getAllSweets());
+    const [sweets, setSweets] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showAddModal, setShowAddModal] = useState(false);
     const [showSortModal, setShowSortModal] = useState(false);
     const [sortOrder, setSortOrder] = useState({ sortBy: null, order: 'asc' });
 
-    const updateSweetsList = () => {
-        setSweets([...shop.getAllSweets()]);
+    // Fetch initial data when the app loads
+    useEffect(() => {
+        const getSweets = async () => {
+            const sweetsFromServer = await fetchSweets();
+            setSweets(sweetsFromServer);
+        };
+        getSweets();
+    }, []);
+
+    const fetchSweets = async () => {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        return data;
     };
 
-    const handleSort = (sortBy, order) => {
-        shop.sortSweets(sortBy, order);
-        setSortOrder({ sortBy, order });
-        updateSweetsList();
-        toast.info(`Sorted by ${sortBy} (${order === 'asc' ? 'ascending' : 'descending'})`);
-    };
-    
-    const handleClearSort = () => {
-        shop.sortSweets('id', 'asc');
-        setSortOrder({ sortBy: null, order: 'asc' });
-        updateSweetsList();
-        toast.info("Sort has been cleared.");
+    const fetchSweet = async (id) => {
+        const res = await fetch(`${API_URL}/${id}`);
+        const data = await res.json();
+        return data;
     };
 
-    const handleAddSweet = (sweet) => {
-        const maxId = shop.getAllSweets().reduce((max, s) => (s.id > max ? s.id : max), 0);
-        const newId = maxId > 0 ? maxId + 1 : 1001;
-        shop.addSweet(newId, sweet.name, sweet.category, sweet.price, sweet.quantity);
-
-        if (sortOrder.sortBy) {
-            shop.sortSweets(sortOrder.sortBy, sortOrder.order);
-        }
-        
-        updateSweetsList();
+    const handleAddSweet = async (sweet) => {
+        const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-type': 'application/json' },
+            body: JSON.stringify(sweet),
+        });
+        const newSweet = await res.json();
+        setSweets([...sweets, newSweet]); // Update UI
         toast.success(`${sweet.name} added successfully!`);
     };
 
-    const handleDeleteSweet = (id) => {
-        const sweetToDelete = shop.getAllSweets().find(s => s.id === id);
-        shop.deleteSweet(id);
-        updateSweetsList();
-        if (sweetToDelete) {
-            toast.error(`${sweetToDelete.name} has been deleted.`);
-        }
+    const handleDeleteSweet = async (id) => {
+        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        setSweets(sweets.filter(sweet => sweet.id !== id)); // Update UI
+        toast.error(`Sweet has been deleted.`);
     };
 
-    const handlePurchase = (id, amount) => {
-        try {
-            const sweetToBuy = shop.getAllSweets().find(s => s.id === id);
-            shop.purchaseSweet(id, amount);
-            updateSweetsList();
+    const updateSweetQuantity = async (id, newQuantity) => {
+        const res = await fetch(`${API_URL}/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-type': 'application/json' },
+            body: JSON.stringify({ quantity: newQuantity }),
+        });
+        const updatedSweet = await res.json();
+        setSweets(sweets.map(sweet => sweet.id === id ? updatedSweet : sweet));
+    };
+
+    const handlePurchase = async (id, amount) => {
+        const sweetToBuy = await fetchSweet(id);
+        if (sweetToBuy.quantity >= amount) {
+            const newQuantity = sweetToBuy.quantity - amount;
+            await updateSweetQuantity(id, newQuantity);
             toast.success(`You purchased ${amount} ${sweetToBuy.name}(s).`);
-        } catch (error) {
-            toast.error(error.message);
+        } else {
+            toast.error(`Not enough stock for ${sweetToBuy.name}!`);
         }
     };
 
-    const handleRestock = (id, amount) => {
-        const sweetToRestock = shop.getAllSweets().find(s => s.id === id);
-        shop.restockSweet(id, amount);
-        updateSweetsList();
+    const handleRestock = async (id, amount) => {
+        const sweetToRestock = await fetchSweet(id);
+        const newQuantity = sweetToRestock.quantity + amount;
+        await updateSweetQuantity(id, newQuantity);
         toast.info(`${sweetToRestock.name} has been restocked with ${amount} units.`);
     };
 
-    const filteredSweets = shop.searchSweets(searchTerm);
+    // Filtering and sorting are now done on the frontend state
+    const sortedSweets = [...sweets].sort((a, b) => {
+        if (!sortOrder.sortBy) return 0;
+        const valA = sortOrder.sortBy === 'name' ? a.name.toLowerCase() : a.price;
+        const valB = sortOrder.sortBy === 'name' ? b.name.toLowerCase() : b.price;
+        if (valA < valB) return sortOrder.order === 'asc' ? -1 : 1;
+        if (valA > valB) return sortOrder.order === 'asc' ? 1 : -1;
+        return 0;
+    });
+
+    const filteredAndSortedSweets = sortedSweets.filter(sweet =>
+        sweet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        sweet.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(sweet.id).includes(searchTerm)
+    );
 
     return (
         <div className="App">
+            {/* The rest of your JSX remains exactly the same */}
             <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
             <Header />
             <Container className="mt-4">
                 <Row className="align-items-center mb-3">
-                    <Col><h2 className='text-start'>Available Sweets</h2></Col>
+                    <Col><h2>Available Sweets</h2></Col>
                     <Col className="text-end">
                         <Button variant="primary" onClick={() => setShowAddModal(true)}>
                             + Add a New Sweet
                         </Button>
                     </Col>
                 </Row>
-                
-                <SearchBar 
-                    searchTerm={searchTerm} 
-                    setSearchTerm={setSearchTerm} 
+                <SearchBar
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
                     onSortClick={() => setShowSortModal(true)}
                     sortOrder={sortOrder}
                 />
-                
                 <SweetList
-                    sweets={filteredSweets}
+                    sweets={filteredAndSortedSweets}
                     searchTerm={searchTerm}
                     onDelete={handleDeleteSweet}
                     onPurchase={handlePurchase}
                     onRestock={handleRestock}
                 />
             </Container>
-
-            <AddSweet 
+            <AddSweet
                 show={showAddModal}
                 handleClose={() => setShowAddModal(false)}
                 onAdd={handleAddSweet}
             />
-
             <SortModal
                 show={showSortModal}
                 handleClose={() => setShowSortModal(false)}
-                onSort={handleSort}
-                onClearSort={handleClearSort}
+                onSort={(sortBy, order) => setSortOrder({ sortBy, order })}
+                onClearSort={() => setSortOrder({ sortBy: null, order: 'asc' })}
                 sortOrder={sortOrder}
             />
         </div>
