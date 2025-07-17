@@ -34,6 +34,17 @@ class SweetShop {
         });
     }
 
+    purchaseSweet(id, quantity) {
+    const sweet = this.sweets.find(sweet => sweet.id === id);
+    if (!sweet) {
+        throw new Error('Sweet not found');
+    }
+    if (sweet.quantity < quantity) {
+        throw new Error('Not enough stock available');
+    }
+    sweet.quantity -= quantity;
+}
+
     
 
 }
