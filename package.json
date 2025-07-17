@@ -1,6 +1,10 @@
 {
-  "name": "sweetshop",
+  "name": "sweetshop-root",
   "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
   "description": "Sweet Shop Management System with TDD using Jest",
   "main": "src/sweetshop.js",
   "scripts": {
@@ -18,4 +22,3 @@
     "jest": "^30.0.4"
   }
 }
-
