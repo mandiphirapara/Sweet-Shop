@@ -20,33 +20,6 @@ This system allows for full CRUD operations, real-time searching, sorting, and i
 ---
 
 ## 📂 Project Structure
-
-Of course. Here is the complete code for your README.md file. Just copy everything inside the box below and paste it into your file.
-
-Markdown
-
-# 🍬 Sweet Shop Management System
-
-A **full-stack Sweet Shop Management System** featuring backend logic built with **JavaScript** and a dynamic frontend built with **React** and **Bootstrap**.
-
-This system allows for full CRUD operations, real-time searching, sorting, and inventory management through a clean, responsive, and interactive user interface. The backend logic was developed using a **Test-Driven Development (TDD)** approach with **Jest**.
-
----
-
-## ✅ Features
-
-* **Full CRUD Functionality**: Add, view, update, and delete sweets through an interactive modal UI.
-* **Instant Search**: Filter the sweets list instantly by ID, Name, or Category.
-* **Advanced Sorting**: Sort the list by Name (A-Z, Z-A) or Price (Low-High, High-Low) and clear the sort to return to the default order.
-* **Interactive Inventory Management**:
-    * **Purchase & Restock**: Use modals to specify the exact quantity to buy or restock.
-    * **Safe Deletion**: A confirmation dialog prevents accidental deletions.
-* **User-Friendly Feedback**: Toast notifications provide clear feedback for all actions.
-* **Responsive Design**: The layout is fully responsive and works seamlessly on desktop, tablet, and mobile devices.
-
----
-
-## 📂 Project Structure
 ```
 Sweet-Shop/
 └── frontend/
